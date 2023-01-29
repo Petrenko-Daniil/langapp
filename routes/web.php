@@ -14,6 +14,10 @@ use App\Http\Controllers\WiktionaryParseApiController;
 */
 
 Route::get('/', function () {
-
+    return view("welcome");
 });
 Route::get('word', [WiktionaryParseApiController::class, 'parse']);
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
