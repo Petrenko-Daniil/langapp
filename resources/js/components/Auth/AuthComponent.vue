@@ -7,7 +7,7 @@
                     LANGAPP
                 </h1>
                 <h2 class="auth-form-h2">
-                    authentication
+                    {{formH2}}
                 </h2>
             </div>
 
@@ -16,7 +16,7 @@
             <login-form-component v-if="currentPage == 'login' || nextPage == 'login'" @setCurrentPage="changeCurrentPage"></login-form-component>
             <language-form-component v-if="currentPage == 'language' || nextPage == 'language'" @setCurrentPage="changeCurrentPage"></language-form-component>
 
-            <div class="auth-form-footer">
+            <div v-if="currentPage != 'language'" class="auth-form-footer">
                 <div class="auth-form-button">
                     <div class="auth-form-button-content">
                         <object class="auth-form-google-logo" type="image/svg+xml" data="/icons/add-icons/google.svg"></object>
@@ -46,6 +46,7 @@ export default {
             currentPage: 'authform',
             nextPage: 'authform',
             formHeight: undefined,
+            formH2: 'authentication',
         }
     },
     mounted(){
@@ -80,7 +81,13 @@ export default {
                         } else {
                             document.getElementsByClassName(this.currentPage + '-form')[0].style.display = 'none';
                         }
-
+                        if(this.nextPage == 'language'){
+                            anime({
+                               targets: 'auth-form-footer',
+                                opacity: 0,
+                                duration: 100,
+                            });
+                        }
                         this.additionalAnime(page);
                     }
                 });
@@ -122,9 +129,38 @@ export default {
                                 complete: () => {
                                     this.currentPage = this.nextPage;
                                 }
+                            })
+                            .add({
+                                targets: '.auth-form-h2',
+                                opacity: 0,
+                                duration: 150,
+                                easing: 'linear',
+                                complete: () => {
+                                    this.changeH2();
+                                },
+                            })
+                            .add({
+                                targets: '.auth-form-h2',
+                                opacity: 1,
+                                duration: 150,
+                                easing: 'linear',
                             });
                   },
             })
+        },
+        changeH2(){
+            if(this.currentPage == 'authform'){
+                this.formH2 = 'authentication';
+            }
+            if(this.currentPage == 'login'){
+                this.formH2 = 'login';
+            }
+            if(this.currentPage == 'registration'){
+                this.formH2 = 'registration';
+            }
+            if(this.currentPage == 'language'){
+                this.formH2 = 'let`s start';
+            }
         },
         updateTransformOfContent(){
             let formContainer = document.getElementById('auth-form-head').offsetHeight + document.getElementById('auth-form-body').offsetHeight + 40;
@@ -154,6 +190,7 @@ export default {
 </script>
 
 <style>
+
     input{
         outline:none;
     }
@@ -245,6 +282,9 @@ export default {
     }
     .auth-form-field-show-password-icon{
         width: 20px;
+    }
+    .auth-form-button-enter{
+        font-weight: 500;
     }
     .auth-form-button-enter-container{
         display: flex;
