@@ -55,7 +55,6 @@ export default {
     methods: {
         changeCurrentPage(page){
             this.smoothTransitionAnime(page);
-            this.updateTransformOfContent();
         },
         smoothTransitionAnime(page) {
             anime.timeline()
@@ -65,7 +64,7 @@ export default {
                     duration: 300,
                     easing: 'linear',
                     begin: () => {
-                        this.currentPage = page;
+                        this.nextPage = page;
                     },
                     complete: () => {
                     }
@@ -76,33 +75,39 @@ export default {
                     duration: 500,
                     easing: 'linear',
                     complete: () => {
-                        document.getElementsByClassName('authform')[0].style.display = 'none';
-                        this.additionalAnime();
+                        if(this.currentPage == 'authform'){
+                            document.getElementsByClassName('authform')[0].style.display = 'none';
+                        } else {
+                            document.getElementsByClassName(this.currentPage + '-form')[0].style.display = 'none';
+                        }
+
+                        this.additionalAnime(page);
                     }
                 });
         },
-        additionalAnime(){
+        additionalAnime(page){
+            let targetForm = '.' + page + '-form';
           anime.timeline()
             .add({
-                  targets: '.registration-form',
+                  targets: targetForm,
                   opacity: 0,
                   height: 'max-content',
                   duration: 0,
                   complete: () => {
-                      let formHeight = document.getElementsByClassName('registration-form')[0].offsetHeight;
+                      let formHeight = document.getElementsByClassName(targetForm.slice(1))[0].offsetHeight;
                       anime.timeline()
                       .add({
-                          targets: '.registration-form',
+                          targets: targetForm,
                           height: 0,
                           opacity: 0,
                           duration: 50,
                           delay: 0,
                           complete: () => {
-                              $('.registration-form').css('position', 'static');
+                              $(targetForm).css('position', 'static');
                           },
                       })
                           .add({
-                              targets: '.registration-form',
+                              targets: targetForm,
                               height: formHeight,
                               duration: 1000,
                               begin: () => {
@@ -110,11 +115,13 @@ export default {
                               }
                           })
                             .add({
-                                targets: '.registration-form',
+                                targets: targetForm,
                                 opacity: 1,
                                 duration: 500,
                                 easing: 'linear',
-
+                                complete: () => {
+                                    this.currentPage = this.nextPage;
+                                }
                             });
                   },
             })
@@ -123,7 +130,7 @@ export default {
             let formContainer = document.getElementById('auth-form-head').offsetHeight + document.getElementById('auth-form-body').offsetHeight + 40;
             let formContainerFreeSpace = window.innerHeight - formContainer;
             let formFooterM = 0;
-            if(this.currentPage != 'authform'){
+            if(this.nextPage != 'authform'){
                 if(formContainerFreeSpace > 100){
                     formFooterM = 30;
                 }
@@ -222,5 +229,71 @@ export default {
     }
     .auth-form-container{
         transform: translateY(calc(var(--fcty) * -1));
+    }
+    .auth-form-field-show-password-button{
+        position: relative;
+        top: -40px;
+        right: -210px;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: url('/icons/add-icons/closed-eye.svg');
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+    .auth-form-field-show-password-icon{
+        width: 20px;
+    }
+    .auth-form-button-enter-container{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin-top: 30px
+    }
+    .auth-form-button-enter-container > div{
+        margin: 5px 0;
+    }
+    .auth-form-field{
+        width: 250px;
+        height: 40px;
+        margin-top: 12px;
+    }
+    .auth-form-field-input{
+        width: 100%;
+        height: 100%;
+        border: none;
+        background: #00000000;
+        border-bottom: 2px solid #FFFFFF;
+        color: #FFFFFF;
+        padding-left: 5px;
+    }
+    .auth-form-field-container{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    ::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+        color:    #eee;
+    }
+    :-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+        color:    #eee;
+        opacity:  1;
+    }
+    ::-moz-placeholder { /* Mozilla Firefox 19+ */
+        color:    #eee;
+        opacity:  1;
+    }
+    :-ms-input-placeholder { /* Internet Explorer 10-11 */
+        color:    #eee;
+    }
+    ::-ms-input-placeholder { /* Microsoft Edge */
+        color:    #eee;
+    }
+    ::placeholder { /* Most modern browsers support this now. */
+        color:    #eee;
     }
 </style>
