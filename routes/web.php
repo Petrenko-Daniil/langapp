@@ -16,8 +16,15 @@ use App\Http\Controllers\WiktionaryParseApiController;
 Route::get('/', function () {
     return view("welcome");
 });
+Route::get('auth', function (){
+    return view("welcome");
+})->name('login');
+
 Route::get('word', [WiktionaryParseApiController::class, 'parse']);
 
-Auth::routes();
+Route::middleware(['auth'])->group(function(){
+    Route::get('test', function (){
+        return 'authentificated';
+    });
+});
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
