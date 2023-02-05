@@ -2,19 +2,19 @@
     <div class="auth-form-body registration-form" id="auth-form-body">
         <div class="auth-form-field-container">
             <div class="auth-form-field">
-                <input type="text" class="auth-form-field-input" placeholder="E-MAIL">
+                <input v-model="email" type="text" class="auth-form-field-input" placeholder="E-MAIL">
             </div>
             <div class="auth-form-field">
-                <input type="text" class="auth-form-field-input" placeholder="NICKNAME">
+                <input v-model="name" type="text" class="auth-form-field-input" placeholder="NICKNAME">
             </div>
             <div class="auth-form-field">
-                <input type="password" class="auth-form-field-input auth-form-field-password-input" placeholder="PASSWORD">
+                <input v-model="password" type="password" class="auth-form-field-input auth-form-field-password-input" placeholder="PASSWORD">
                 <div v-on:click="setShowPassword" class="auth-form-field-show-password-button">
                 </div>
             </div>
         </div>
         <div class="auth-form-button-enter-container">
-            <div class="auth-form-button auth-form-button-enter">
+            <div v-on:click="registrationRequest" class="auth-form-button auth-form-button-enter">
                 enter
             </div>
             <div class="auth-form-free-text" v-on:click="setCurrentPage('login')">
@@ -27,11 +27,16 @@
 </template>
 
 <script>
+import qs from "qs";
+
 export default {
     name: "RegistrationFormComponent",
     data: function(){
         return {
             showPassword: false,
+            email: undefined,
+            password: undefined,
+            name: undefined,
         }
     },
     methods: {
@@ -48,6 +53,32 @@ export default {
         },
         setCurrentPage(page){
             this.$emit('setCurrentPage', page);
+        },
+        registrationRequest(){
+            var data = qs.stringify({
+                'email': this.email,
+                'password': this.password,
+                'name' : this.name,
+                'password_confirmation' : this.password,
+            });
+            axios.get('/sanctum/csrf-cookie').then(response => {
+                // Login...
+            });
+            var config = {
+                method: 'post',
+                url: 'register',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                data : data
+            };
+            axios(config)
+                .then(function (response) {
+                    console.log(JSON.stringify(response.data));
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
         },
     }
 }

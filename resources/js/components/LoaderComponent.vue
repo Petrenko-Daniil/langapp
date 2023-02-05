@@ -31,7 +31,7 @@
         <div class="small-title">
             via Wiktionary
         </div>
-        <div class="blue-slider"></div>
+<!--        <div class="blue-slider"></div>-->
     </div>
 </template>
 
@@ -76,11 +76,17 @@ export default {
                 duration: 500,
                 easing: 'linear',
             })
+            // .add({
+            //     targets: '.blue-slider',
+            //     width: '100vw',
+            //     duration: 1000,
+            //     delay: 2000,
+            // })
             .add({
-                targets: '.blue-slider',
-                width: '100vw',
-                duration: 1000,
+                targets: '.container',
                 delay: 2000,
+                opacity: 0,
+                duration: 1000,
                 complete: () => {
                     this.$emit('finishedAnimation');
                 }
@@ -99,6 +105,7 @@ export default {
         flex-direction: column;
         justify-content: center;
         align-items: center;
+        background-color: #fcfcfc;
     }
     .big-logo{
         width: 40vw;
@@ -117,14 +124,14 @@ export default {
         font-size: 14px;
         color: #696969;
     }
-    .blue-slider{
-        background: #253D86;
-        height: 100vh;
-        width: 0vh;
-        position: fixed;
-        top: 0;
-        left: 0;
-    }
+    /*.blue-slider{*/
+    /*    background: #253D86;*/
+    /*    height: 100vh;*/
+    /*    width: 0vh;*/
+    /*    position: fixed;*/
+    /*    top: 0;*/
+    /*    left: 0;*/
+    /*}*/
     .st0{fill:#07338C;}
     .st1{fill:#FFFFFF;}
 </style>

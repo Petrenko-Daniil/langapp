@@ -13,18 +13,18 @@ use App\Http\Controllers\WiktionaryParseApiController;
 |
 */
 
-Route::get('/', function () {
-    return view("welcome");
-});
 Route::get('auth', function (){
     return view("welcome");
 })->name('login');
 
-Route::get('word', [WiktionaryParseApiController::class, 'parse']);
+//Route::get('word', [WiktionaryParseApiController::class, 'parse']);
 
 Route::middleware(['auth'])->group(function(){
     Route::get('test', function (){
         return 'authentificated';
+    });
+    Route::get('/', function () {
+        return 'basic view';
     });
 });
 

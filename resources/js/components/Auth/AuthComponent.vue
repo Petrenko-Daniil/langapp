@@ -1,32 +1,34 @@
 <template>
-    <div class="auth-container">
-        <div id="auth-form-container" class="auth-form-container">
-            <div class="auth-form-head" id="auth-form-head">
-                <object class="auth-form-logo" type="image/svg+xml" data="/icons/cat-icons/logo.svg"></object>
-                <h1 class="auth-form-h1">
-                    LANGAPP
-                </h1>
-                <h2 class="auth-form-h2">
-                    {{formH2}}
-                </h2>
-            </div>
+    <div>
+        <loader-component v-if="loaderPlaying" @finishedAnimation="loaderPlayed"></loader-component>
+        <div v-show="!loaderPlaying" class="auth-container">
+            <div id="auth-form-container" class="auth-form-container">
+                <div class="auth-form-head" id="auth-form-head">
+                    <object class="auth-form-logo" type="image/svg+xml" data="/icons/cat-icons/logo.svg"></object>
+                    <h1 class="auth-form-h1">
+                        LANGAPP
+                    </h1>
+                    <h2 class="auth-form-h2">
+                        {{formH2}}
+                    </h2>
+                </div>
 
-            <authentication-form-component v-if="currentPage == 'authform' || nextPage == 'authform'" @setCurrentPage="changeCurrentPage"></authentication-form-component>
-            <registration-form-component v-if="currentPage == 'registration' || nextPage == 'registration'" @setCurrentPage="changeCurrentPage"></registration-form-component>
-            <login-form-component v-if="currentPage == 'login' || nextPage == 'login'" @setCurrentPage="changeCurrentPage"></login-form-component>
-            <language-form-component v-if="currentPage == 'language' || nextPage == 'language'" @setCurrentPage="changeCurrentPage"></language-form-component>
+                <authentication-form-component v-if="currentPage == 'authform' || nextPage == 'authform'" @setCurrentPage="changeCurrentPage"></authentication-form-component>
+                <registration-form-component v-if="currentPage == 'registration' || nextPage == 'registration'" @setCurrentPage="changeCurrentPage"></registration-form-component>
+                <login-form-component v-if="currentPage == 'login' || nextPage == 'login'" @setCurrentPage="changeCurrentPage"></login-form-component>
+                <language-form-component v-if="currentPage == 'language' || nextPage == 'language'" @setCurrentPage="changeCurrentPage"></language-form-component>
 
-            <div v-if="currentPage != 'language'" class="auth-form-footer">
-                <div class="auth-form-button">
-                    <div class="auth-form-button-content">
-                        <object class="auth-form-google-logo" type="image/svg+xml" data="/icons/add-icons/google.svg"></object>
-                        <span>auth via google</span>
-                        <div class="flex-fake-item"></div>
+                <div v-if="currentPage != 'language'" class="auth-form-footer">
+                    <div class="auth-form-button">
+                        <div class="auth-form-button-content">
+                            <object class="auth-form-google-logo" type="image/svg+xml" data="/icons/add-icons/google.svg"></object>
+                            <span>auth via google</span>
+                            <div class="flex-fake-item"></div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-
     </div>
 </template>
 
@@ -37,16 +39,20 @@ import LoginFormComponent from "./LoginFormComponent.vue";
 import LanguageFormComponent from "./LanguageFormComponent.vue";
 
 import anime from 'animejs/lib/anime.es.js';
+import LoaderComponent from "../LoaderComponent.vue";
 
 export default {
     name: "AuthComponent",
-    components: {LanguageFormComponent, LoginFormComponent, RegistrationFormComponent, AuthenticationFormComponent},
+    components: {
+        LoaderComponent,
+        LanguageFormComponent, LoginFormComponent, RegistrationFormComponent, AuthenticationFormComponent},
     data: function () {
         return {
             currentPage: 'authform',
             nextPage: 'authform',
             formHeight: undefined,
             formH2: 'authentication',
+            loaderPlaying: true,
         }
     },
     mounted(){
@@ -54,6 +60,15 @@ export default {
         document.documentElement.style.setProperty('--vh', `${vh}px`);
     },
     methods: {
+        loaderPlayed(){
+            this.loaderPlaying = false;
+            anime({
+                targets: '.auth-container',
+                opacity: 1,
+                delay: 100,
+                duration: 1000,
+            });
+        },
         changeCurrentPage(page){
             this.smoothTransitionAnime(page);
         },
@@ -199,6 +214,7 @@ export default {
         width: 100vw;
         height: 100vh; /* Fallback for browsers that do not support Custom Properties */
         height: calc(var(--vh, 1vh) * 100);
+        opacity: 0;
     }
     .auth-form-head, .auth-form-body{
         display: flex;
